@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TuEstudio.co – Diseño Digital & Publicidad</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --orange: #FF6B00;
+  --red: #FF2D55;
+  --bg: #080808;
+  --bg2: #0e0e0e;
+  --white: #ffffff;
+  --muted: rgba(255,255,255,0.45);
+  --border: rgba(255,107,0,0.12);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ===== RIPPLE CLICK (punto 1) ===== */
+.ripple {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9990;
+  background: radial-gradient(circle, rgba(255,107,0,0.4) 0%, transparent 70%);
+  width: 0; height: 0;
+  transform: translate(-50%, -50%);
+  animation: rippleOut 0.55s ease-out forwards;
+}
+@keyframes rippleOut {
+  0%   { width: 0;    height: 0;    opacity: 1; }
+  100% { width: 130px; height: 130px; opacity: 0; }
+}
+
+/* ===== SMOOTH GLOBAL TRANSITIONS (punto 1) ===== */
+a, button, .service-item, .portfolio-card, .step, .result-card {
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1) !important;
+}
+
+/* ===== CURSOR ===== */
+.cursor {
+  position: fixed;
+  width: 12px; height: 12px;
+  background: var(--orange);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease;
+}
+.cursor-ring {
+  position: fixed;
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(255,107,0,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transition: width 0.3s, height 0.3s, border-color 0.3s;
+}
+
+/* ===== NOISE ===== */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:0.025; pointer-events:none; z-index:9000;
+}
+
+/* ===== NAV ===== */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:24px 60px;
+  display:flex; justify-content:space-between; align-items:center;
+  background:linear-gradient(to bottom,rgba(8,8,8,0.95) 0%,transparent 100%);
+  backdrop-filter:blur(4px);
+}
+.logo { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:2px; }
+.logo span { color:var(--orange); }
+.nav-links { display:flex; gap:36px; list-style:none; }
+.nav-links a { color:var(--muted); text-decoration:none; font-size:13px; font-weight:500; letter-spacing:1px; text-transform:uppercase; }
+.nav-links a:hover { color:var(--white); }
+.nav-cta { background:linear-gradient(135deg,var(--orange),var(--red)); color:white !important; padding:10px 24px; border-radius:30px; font-weight:700 !important; }
+.nav-cta:hover { opacity:0.85; transform:translateY(-1px) !important; }
+
+/* ===== HERO ===== */
+.hero {
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  padding:120px 60px 80px;
+  gap:60px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-left { display:flex; flex-direction:column; }
+
+/* Hero right visual (punto 8) */
+.hero-right {
+  position:relative; z-index:2;
+  display:flex; align-items:center; justify-content:center;
+  height:500px;
+}
+.hero-visual { position:relative; width:100%; height:100%; }
+
+.hvc-ring {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:320px; height:320px;
+  border-radius:50%;
+  border:1px dashed rgba(255,107,0,0.15);
+  animation:spin 22s linear infinite;
+}
+.hvc-ring-2 {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:200px; height:200px;
+  border-radius:50%;
+  border:1px dashed rgba(255,107,0,0.08);
+  animation:spin 15s linear infinite reverse;
+}
+@keyframes spin { to { transform:translate(-50%,-50%) rotate(360deg); } }
+
+.hv-card {
+  position:absolute;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,107,0,0.18);
+  border-radius:18px;
+  padding:18px 20px;
+  backdrop-filter:blur(12px);
+  animation:floatCard 5s ease-in-out infinite;
+}
+.hv-card:nth-child(3) { animation-delay:-1.8s; }
+.hv-card:nth-child(4) { animation-delay:-3.2s; }
+.hv-card:nth-child(5) { animation-delay:-0.9s; }
+@keyframes floatCard {
+  0%,100% { transform:translateY(0); }
+  50%      { transform:translateY(-14px); }
+}
+
+/* Brand card - center top */
+.hvc-brand { top:10px; left:50%; transform:translateX(-50%); text-align:center; width:190px; }
+.hvc-brand-circle {
+  width:76px; height:76px; border-radius:50%;
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  margin:0 auto 10px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1px;
+  box-shadow:0 0 40px rgba(255,107,0,0.4);
+}
+.hvc-brand-name { font-size:13px; font-weight:700; letter-spacing:1px; }
+.hvc-brand-sub  { font-size:10px; color:var(--muted); margin-top:2px; }
+
+/* Stat card - bottom left */
+.hvc-stat { bottom:70px; left:0; width:148px; }
+.hvc-stat-num { font-family:'Bebas Neue',sans-serif; font-size:44px; line-height:1; color:var(--orange); }
+.hvc-stat-label { font-size:10px; color:var(--muted); margin-top:2px; letter-spacing:.5px; }
+
+/* Tags card - bottom right */
+.hvc-tags { bottom:70px; right:0; width:162px; display:flex; flex-wrap:wrap; gap:6px; }
+.hvc-tag {
+  background:rgba(255,107,0,0.1); border:1px solid rgba(255,107,0,0.22);
+  color:var(--orange); font-size:10px; font-weight:700; letter-spacing:1px;
+  padding:4px 10px; border-radius:20px; text-transform:uppercase;
+}
+
+/* Notif card - middle right */
+.hvc-notif { top:195px; right:-5px; width:188px; display:flex; align-items:center; gap:12px; }
+.hvc-notif-icon {
+  width:38px; height:38px; border-radius:10px; flex-shrink:0;
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  display:flex; align-items:center; justify-content:center; font-size:18px;
+}
+.hvc-notif-text { font-size:11px; line-height:1.45; }
+.hvc-notif-text strong { display:block; font-size:12px; }
+
+/* Hero bg elements */
+.hero-grid {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,107,0,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,107,0,0.04) 1px,transparent 1px);
+  background-size:50px 50px;
+  animation:gridDrift 12s linear infinite;
+}
+@keyframes gridDrift { 0%{background-position:0 0} 100%{background-position:50px 50px} }
+.hero-glow-1 {
+  position:absolute; top:-200px; left:-200px; width:700px; height:700px;
+  background:radial-gradient(circle,rgba(255,107,0,0.18) 0%,transparent 65%);
+  animation:glow1 8s ease-in-out infinite;
+}
+.hero-glow-2 {
+  position:absolute; bottom:-150px; right:-100px; width:600px; height:600px;
+  background:radial-gradient(circle,rgba(255,45,85,0.12) 0%,transparent 65%);
+  animation:glow1 8s ease-in-out infinite 4s;
+}
+@keyframes glow1 { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.15);opacity:.7} }
+
+.hero-tag {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,107,0,0.1); border:1px solid rgba(255,107,0,0.25);
+  color:var(--orange); font-size:11px; font-weight:700; letter-spacing:3px;
+  text-transform:uppercase; padding:8px 18px; border-radius:30px;
+  margin-bottom:32px; width:fit-content; position:relative; z-index:2;
+  animation:fadeUp .8s ease both;
+}
+.hero-tag::before { content:'●'; font-size:8px; animation:blink 1.5s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.hero-headline {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(64px,7vw,118px); line-height:.9;
+  position:relative; z-index:2;
+  animation:fadeUp .8s ease .15s both;
+}
+.hero-headline .accent { color:var(--orange); }
+.hero-headline .stroke { -webkit-text-stroke:2px var(--orange); color:transparent; }
+
+.hero-sub {
+  font-size:16px; color:var(--muted); max-width:420px; line-height:1.7;
+  margin-top:28px; position:relative; z-index:2;
+  animation:fadeUp .8s ease .3s both;
+}
+.hero-actions {
+  display:flex; gap:16px; margin-top:40px;
+  position:relative; z-index:2;
+  animation:fadeUp .8s ease .45s both;
+}
+.btn-primary {
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  color:white; text-decoration:none; padding:16px 36px;
+  border-radius:50px; font-weight:700; font-size:14px; letter-spacing:.5px;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn-primary:hover { transform:translateY(-3px) !important; box-shadow:0 20px 50px rgba(255,107,0,.35); }
+.btn-ghost {
+  border:1.5px solid rgba(255,255,255,.15); color:white; text-decoration:none;
+  padding:16px 36px; border-radius:50px; font-weight:600; font-size:14px;
+}
+.btn-ghost:hover { border-color:var(--orange) !important; color:var(--orange) !important; }
+
+.hero-stats {
+  display:flex; gap:50px; margin-top:60px;
+  position:relative; z-index:2;
+  animation:fadeUp .8s ease .6s both;
+}
+.stat-num { font-family:'Bebas Neue',sans-serif; font-size:48px; line-height:1; }
+.stat-num span { color:var(--orange); }
+.stat-label { font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-top:4px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+/* ===== MARQUEE ===== */
+.marquee-wrap {
+  overflow:hidden; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  padding:20px 0; background:rgba(255,107,0,.03);
+}
+.marquee-track { display:flex; white-space:nowrap; animation:marquee 20s linear infinite; }
+@keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+.marquee-item {
+  font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:4px;
+  color:var(--muted); padding:0 30px;
+  display:inline-flex; align-items:center; gap:30px;
+}
+.marquee-item::after { content:'✦'; color:var(--orange); font-size:12px; }
+
+/* ===== SECTIONS ===== */
+.section { padding:120px 60px; }
+.section-label { font-size:11px; letter-spacing:4px; color:var(--orange); text-transform:uppercase; font-weight:700; margin-bottom:16px; }
+.section-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(48px,6vw,80px); line-height:.95; margin-bottom:70px; }
+.section-title span { color:var(--orange); }
+
+/* ===== SERVICES ===== */
+.services-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:2px; }
+.service-item {
+  background:var(--bg2); padding:48px 44px;
+  position:relative; overflow:hidden; cursor:none;
+}
+.service-item::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(255,107,0,.07) 0%,transparent 60%);
+  opacity:0; transition:opacity .4s;
+}
+.service-item:hover { background:#111 !important; }
+.service-item:hover::before { opacity:1; }
+.service-item:hover .service-arrow { transform:translate(4px,-4px); color:var(--orange); }
+.service-num { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:3px; color:rgba(255,107,0,.4); margin-bottom:24px; }
+.service-icon-wrap {
+  width:54px; height:54px; border:1px solid var(--border); border-radius:14px;
+  display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:24px;
+}
+.service-item:hover .service-icon-wrap { border-color:rgba(255,107,0,.4); }
+.service-name { font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:1px; margin-bottom:14px; }
+.service-desc { font-size:14px; color:var(--muted); line-height:1.7; max-width:280px; }
+.service-arrow { position:absolute; top:44px; right:44px; font-size:20px; color:rgba(255,255,255,.2); }
+
+/* ===== PROCESS ===== */
+.process { background:var(--bg2); }
+.process-steps { display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--border); }
+.step { padding:48px 36px; border-right:1px solid var(--border); position:relative; }
+.step:last-child { border-right:none; }
+.step:hover { background:rgba(255,107,0,.04) !important; }
+.step-line { position:absolute; top:0; left:0; right:0; height:3px; transition:background .4s; }
+.step:hover .step-line { background:linear-gradient(90deg,var(--orange),var(--red)); }
+.step-num { font-family:'Bebas Neue',sans-serif; font-size:60px; color:rgba(255,107,0,.08); line-height:1; margin-bottom:16px; }
+.step-title { font-weight:700; font-size:15px; margin-bottom:10px; letter-spacing:.5px; }
+.step-desc { font-size:13px; color:var(--muted); line-height:1.6; }
+
+/* ===== PORTFOLIO (punto 2: descripciones por tarjeta) ===== */
+.portfolio-grid {
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  grid-template-rows:280px 280px;
+  gap:3px; margin-top:60px;
+}
+.portfolio-card { position:relative; overflow:hidden; background:var(--bg2); cursor:none; }
+.portfolio-card.tall { grid-row:span 2; }
+.portfolio-card-bg { position:absolute; inset:0; transition:transform .6s ease; }
+.portfolio-card:hover .portfolio-card-bg { transform:scale(1.06); }
+.pc1 .portfolio-card-bg { background:linear-gradient(135deg,#1a0800 0%,#3d1500 50%,#FF6B00 100%); }
+.pc2 .portfolio-card-bg { background:linear-gradient(135deg,#0a0a1a 0%,#1a0d2e 100%); }
+.pc3 .portfolio-card-bg { background:linear-gradient(135deg,#0a1a0a 0%,#0d2e14 100%); }
+.pc4 .portfolio-card-bg { background:linear-gradient(135deg,#1a0a0a 0%,#2e0d0d 100%); }
+.pc5 .portfolio-card-bg { background:linear-gradient(135deg,#0a100a 0%,#151f10 100%); }
+
+.portfolio-card-inner {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:28px;
+  background:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.45) 55%,transparent 100%);
+  opacity:0; transition:opacity .45s ease;
+}
+.portfolio-card:hover .portfolio-card-inner { opacity:1; }
+.pc-tag { font-size:10px; letter-spacing:2px; color:var(--orange); text-transform:uppercase; font-weight:700; margin-bottom:5px; }
+.pc-name { font-weight:700; font-size:15px; margin-bottom:8px; }
+.pc-desc {
+  font-size:12px; color:rgba(255,255,255,.65); line-height:1.55;
+  transform:translateY(8px); opacity:0;
+  transition:opacity .4s ease .1s, transform .4s ease .1s;
+}
+.portfolio-card:hover .pc-desc { opacity:1; transform:translateY(0); }
+
+.portfolio-card .deco {
+  position:absolute; border-radius:50%; opacity:.15; transition:transform .6s ease;
+}
+.portfolio-card:hover .deco { transform:scale(1.3); }
+.pc1 .deco { width:300px; height:300px; background:var(--orange); top:-80px; right:-80px; }
+.pc2 .deco { width:200px; height:200px; background:#7B2FFF; top:-60px; right:-60px; }
+.pc3 .deco { width:180px; height:180px; background:#00FF87; bottom:-50px; left:-50px; }
+.pc4 .deco { width:160px; height:160px; background:var(--red); top:-40px; left:-40px; }
+.pc5 .deco { width:200px; height:200px; background:#FFD600; bottom:-60px; right:-60px; }
+
+.pc-label {
+  position:absolute; top:20px; left:20px;
+  font-size:11px; font-weight:700; letter-spacing:1px;
+  color:rgba(255,255,255,.4); text-transform:uppercase;
+  transition:opacity .3s;
+}
+.portfolio-card:hover .pc-label { opacity:0; }
+
+/* ===== RESULTS ===== */
+.results-row { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:60px; }
+.result-card {
+  background:var(--bg2); padding:60px 48px;
+  position:relative; overflow:hidden; text-align:center;
+}
+.result-card::before {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--orange),var(--red));
+  transform:scaleX(0); transition:transform .4s; transform-origin:left;
+}
+.result-card:hover::before { transform:scaleX(1); }
+.result-card:hover { background:#111 !important; }
+.result-big { font-family:'Bebas Neue',sans-serif; font-size:90px; line-height:1; }
+.result-big sup { font-size:40px; color:var(--orange); }
+.result-big sub { font-size:40px; color:var(--orange); vertical-align:baseline; }
+.result-text { font-size:13px; color:var(--muted); margin:12px auto 0; line-height:1.6; max-width:200px; }
+
+/* ===== CTA ===== */
+.cta-section { padding:120px 60px; text-align:center; position:relative; overflow:hidden; }
+.cta-section::before {
+  content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:800px; height:800px;
+  background:radial-gradient(circle,rgba(255,107,0,.12) 0%,transparent 65%);
+  animation:glow1 6s ease-in-out infinite;
+}
+.cta-eyebrow { font-size:11px; letter-spacing:5px; color:var(--orange); text-transform:uppercase; font-weight:700; margin-bottom:20px; position:relative; z-index:2; }
+.cta-headline { font-family:'Bebas Neue',sans-serif; font-size:clamp(60px,8vw,120px); line-height:.9; position:relative; z-index:2; margin-bottom:40px; }
+.cta-headline span { color:var(--orange); }
+.cta-btns { display:flex; gap:16px; justify-content:center; position:relative; z-index:2; }
+
+/* ===== FOOTER ===== */
+footer {
+  border-top:1px solid var(--border); padding:48px 60px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.footer-logo { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; }
+.footer-logo span { color:var(--orange); }
+.footer-links { display:flex; gap:28px; }
+.footer-links a { color:var(--muted); text-decoration:none; font-size:12px; cursor:none; }
+.footer-links a:hover { color:var(--orange); }
+.footer-copy { font-size:12px; color:rgba(255,255,255,.2); }
+
+/* ===== PRIVACY MODAL (punto 5) ===== */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.85);
+  z-index:8000; display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none;
+  transition:opacity .4s ease;
+  backdrop-filter:blur(8px);
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-box {
+  background:#111; border:1px solid rgba(255,107,0,.2); border-radius:20px;
+  padding:52px; max-width:680px; width:90%; max-height:80vh; overflow-y:auto;
+  position:relative; transform:translateY(30px); transition:transform .4s ease;
+}
+.modal-overlay.open .modal-box { transform:translateY(0); }
+.modal-box::-webkit-scrollbar { width:4px; }
+.modal-box::-webkit-scrollbar-thumb { background:rgba(255,107,0,.3); border-radius:2px; }
+.modal-close { position:absolute; top:20px; right:24px; background:none; border:none; color:var(--muted); font-size:24px; cursor:none; line-height:1; }
+.modal-close:hover { color:var(--orange); }
+.modal-title { font-family:'Bebas Neue',sans-serif; font-size:40px; margin-bottom:6px; letter-spacing:1px; }
+.modal-title span { color:var(--orange); }
+.modal-date { font-size:11px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-bottom:32px; }
+.modal-section { margin-bottom:22px; }
+.modal-section h3 { font-size:13px; font-weight:700; letter-spacing:1px; margin-bottom:8px; color:var(--orange); text-transform:uppercase; }
+.modal-section p { font-size:13px; color:rgba(255,255,255,.62); line-height:1.8; }
+
+/* ===== REVEAL – motion por módulo ===== */
+
+/* Base: fade-up (todos los módulos por defecto) */
+.reveal {
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+              transform 0.75s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Fade-up con ligero blur — títulos de sección */
+.reveal-blur {
+  opacity: 0;
+  transform: translateY(32px);
+  filter: blur(6px);
+  transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1),
+              transform 0.8s cubic-bezier(0.22,1,0.36,1),
+              filter 0.8s ease;
+}
+.reveal-blur.visible { opacity: 1; transform: translateY(0); filter: blur(0); }
+
+/* Slide desde la izquierda — servicios left */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+              transform 0.75s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+/* Slide desde la derecha — servicios right */
+.reveal-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+              transform 0.75s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* Scale-in — portafolio y resultados */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.93) translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1),
+              transform 0.7s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-scale.visible { opacity: 1; transform: scale(1) translateY(0); }
+
+/* Stagger delay helpers */
+.reveal-d1 { transition-delay: 0.08s; }
+.reveal-d2 { transition-delay: 0.18s; }
+.reveal-d3 { transition-delay: 0.28s; }
+.reveal-d4 { transition-delay: 0.38s; }
+
+/* ===== MOBILE ===== */
+@media(max-width:900px){
+  nav { padding:20px 24px; }
+  .nav-links { display:none; }
+  .hero { grid-template-columns:1fr; padding:100px 24px 60px; }
+  .hero-right { display:none; }
+  .hero-stats { gap:30px; }
+  .section { padding:80px 24px; }
+  .services-grid { grid-template-columns:1fr; }
+  .process-steps { grid-template-columns:1fr 1fr; }
+  .portfolio-grid { grid-template-columns:1fr; grid-template-rows:auto; }
+  .portfolio-card.tall { grid-row:span 1; }
+  .results-row { grid-template-columns:1fr; }
+  .cta-section { padding:80px 24px; }
+  footer { flex-direction:column; gap:24px; text-align:center; padding:40px 24px; }
+  body { cursor:auto; }
+  .cursor,.cursor-ring { display:none; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- PRIVACY MODAL (punto 5) -->
+<div class="modal-overlay" id="privacyModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closePrivacy()">✕</button>
+    <div class="modal-title">POLÍTICA DE <span>PRIVACIDAD</span></div>
+    <div class="modal-date">Última actualización: Mayo 2025</div>
+    <div class="modal-section">
+      <h3>1. Responsable del tratamiento</h3>
+      <p>TuEstudio.co es responsable del tratamiento de los datos personales recopilados a través de este sitio web y canales de contacto. Contacto: tuestudio.co@gmail.com · WhatsApp: +57 324 689 0767.</p>
+    </div>
+    <div class="modal-section">
+      <h3>2. Datos que recopilamos</h3>
+      <p>Recopilamos información que usted nos proporciona voluntariamente al contactarnos: nombre, correo electrónico, número de teléfono y descripción de su proyecto o consulta. No recopilamos datos sensibles sin su consentimiento explícito.</p>
+    </div>
+    <div class="modal-section">
+      <h3>3. Finalidad del tratamiento</h3>
+      <p>Los datos son utilizados exclusivamente para: responder consultas y presupuestos, enviar información relacionada con nuestros servicios (previa autorización) y mejorar la experiencia de nuestros clientes. No vendemos ni cedemos sus datos a terceros.</p>
+    </div>
+    <div class="modal-section">
+      <h3>4. Almacenamiento y seguridad</h3>
+      <p>La información se almacena en plataformas seguras con cifrado estándar. Aplicamos medidas técnicas y organizativas para proteger sus datos contra accesos no autorizados, pérdida o divulgación indebida.</p>
+    </div>
+    <div class="modal-section">
+      <h3>5. Sus derechos</h3>
+      <p>De acuerdo con la Ley 1581 de 2012 (Colombia), usted tiene derecho a conocer, actualizar, rectificar y suprimir sus datos personales. Para ejercer estos derechos, escríbanos a tuestudio.co@gmail.com.</p>
+    </div>
+    <div class="modal-section">
+      <h3>6. Cookies</h3>
+      <p>Este sitio no utiliza cookies de rastreo ni herramientas de análisis de terceros que recopilen datos personales identificables.</p>
+    </div>
+    <div class="modal-section">
+      <h3>7. Cambios en esta política</h3>
+      <p>Podemos actualizar esta política ocasionalmente. Cualquier cambio significativo será comunicado a través de nuestros canales habituales.</p>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Tu<span>Estudio</span>.co</div>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#proceso">Proceso</a></li>
+    <li><a href="#portafolio">Portafolio</a></li>
+    <li><a href="#resultados">Resultados</a></li>
+    <li><a href="#contacto" class="nav-cta">Empecemos →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+
+  <!-- LEFT -->
+  <div class="hero-left">
+    <!-- punto 4: "Estudio Creativo Digital" → sutil pero con impacto -->
+    <div class="hero-tag">Estudio Creativo Digital</div>
+
+    <h1 class="hero-headline">
+      TU MARCA<br>
+      <span class="accent">MERECE</span><br>
+      <span class="stroke">MÁS.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Diseño digital, branding y publicidad que no solo se ve bien —
+      <em>que vende, que conecta, que se recuerda.</em>
+    </p>
+
+    <div class="hero-actions">
+      <a href="#contacto" class="btn-primary">Quiero empezar →</a>
+      <a href="#portafolio" class="btn-ghost">Ver portafolio</a>
+    </div>
+
+    <div class="hero-stats">
+      <div><div class="stat-num">+80<span>k</span></div><div class="stat-label">Alcance generado</div></div>
+      <div><div class="stat-num">3<span>x</span></div><div class="stat-label">ROI promedio</div></div>
+      <div><div class="stat-num">40<span>+</span></div><div class="stat-label">Proyectos activos</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT VISUAL (punto 8) -->
+  <div class="hero-right">
+    <div class="hero-visual">
+      <div class="hvc-ring"></div>
+      <div class="hvc-ring-2"></div>
+
+      <div class="hv-card hvc-brand">
+        <div class="hvc-brand-circle">TE</div>
+        <div class="hvc-brand-name">TuEstudio.co</div>
+        <div class="hvc-brand-sub">Estudio Creativo Digital</div>
+      </div>
+
+      <div class="hv-card hvc-stat">
+        <div class="hvc-stat-num">3x</div>
+        <div class="hvc-stat-label">ROI promedio</div>
+      </div>
+
+      <div class="hv-card hvc-tags">
+        <span class="hvc-tag">Branding</span>
+        <span class="hvc-tag">Reels</span>
+        <span class="hvc-tag">Ads</span>
+        <span class="hvc-tag">Social</span>
+        <span class="hvc-tag">Motion</span>
+      </div>
+
+      <div class="hv-card hvc-notif">
+        <div class="hvc-notif-icon">✦</div>
+        <div class="hvc-notif-text"><strong>Nuevo proyecto</strong>Identidad visual lista 🎨</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">BRANDING</span><span class="marquee-item">SOCIAL MEDIA</span><span class="marquee-item">PUBLICIDAD DIGITAL</span><span class="marquee-item">DISEÑO GRÁFICO</span><span class="marquee-item">REELS & VIDEO</span><span class="marquee-item">IDENTIDAD VISUAL</span><span class="marquee-item">ADS ESTRATÉGICOS</span><span class="marquee-item">MOTION GRAPHICS</span><span class="marquee-item">BRANDING</span><span class="marquee-item">SOCIAL MEDIA</span><span class="marquee-item">PUBLICIDAD DIGITAL</span><span class="marquee-item">DISEÑO GRÁFICO</span><span class="marquee-item">REELS & VIDEO</span><span class="marquee-item">IDENTIDAD VISUAL</span><span class="marquee-item">ADS ESTRATÉGICOS</span><span class="marquee-item">MOTION GRAPHICS</span>
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<section class="section" id="servicios">
+  <div class="reveal-blur">
+    <div class="section-label">Lo que hacemos</div>
+    <h2 class="section-title">NUESTROS<br><span>SERVICIOS</span></h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-item reveal-left reveal-d1">
+      <div class="service-arrow">↗</div>
+      <div class="service-num">01</div>
+      <div class="service-icon-wrap">🎨</div>
+      <div class="service-name">BRANDING & IDENTIDAD</div>
+      <p class="service-desc">Logo, paleta, tipografía, manual de marca. Todo lo que necesitás para que te reconozcan al instante.</p>
+    </div>
+    <div class="service-item reveal-right reveal-d2">
+      <div class="service-arrow">↗</div>
+      <div class="service-num">02</div>
+      <div class="service-icon-wrap">📱</div>
+      <div class="service-name">SOCIAL MEDIA</div>
+      <p class="service-desc">Contenido visual estratégico para Instagram, TikTok y más. Feeds que generan engagement real.</p>
+    </div>
+    <div class="service-item reveal-left reveal-d3">
+      <div class="service-arrow">↗</div>
+      <div class="service-num">03</div>
+      <div class="service-icon-wrap">🎬</div>
+      <div class="service-name">REELS & MOTION</div>
+      <p class="service-desc">Videos y animaciones que paran el scroll. Producción y edición profesional para cada plataforma.</p>
+    </div>
+    <div class="service-item reveal-right reveal-d4">
+      <div class="service-arrow">↗</div>
+      <div class="service-num">04</div>
+      <div class="service-icon-wrap">📣</div>
+      <div class="service-name">PUBLICIDAD DIGITAL</div>
+      <p class="service-desc">Campañas en Meta Ads y Google que convierten. Diseño + estrategia + optimización continua.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section class="section process" id="proceso">
+  <div class="reveal-blur">
+    <div class="section-label">Cómo trabajamos</div>
+    <h2 class="section-title">NUESTRO<br><span>PROCESO</span></h2>
+  </div>
+  <div class="process-steps">
+    <div class="step reveal reveal-d1"><div class="step-line"></div><div class="step-num">01</div><div class="step-title">Diagnóstico</div><p class="step-desc">Analizamos tu marca, competencia y audiencia para entender exactamente qué necesitás.</p></div>
+    <div class="step reveal reveal-d2"><div class="step-line"></div><div class="step-num">02</div><div class="step-title">Estrategia</div><p class="step-desc">Definimos objetivos claros y una hoja de ruta creativa antes de diseñar una sola pieza.</p></div>
+    <div class="step reveal reveal-d3"><div class="step-line"></div><div class="step-num">03</div><div class="step-title">Creación</div><p class="step-desc">Diseñamos, producimos y refinamos hasta que cada detalle sea perfecto y represente tu esencia.</p></div>
+    <div class="step reveal reveal-d4"><div class="step-line"></div><div class="step-num">04</div><div class="step-title">Lanzamiento</div><p class="step-desc">Publicamos, medimos y optimizamos en tiempo real para maximizar el impacto de cada peso invertido.</p></div>
+  </div>
+</section>
+
+<!-- PORTAFOLIO (punto 2) -->
+<section class="section" id="portafolio">
+  <div class="reveal-blur">
+    <div class="section-label">Nuestro trabajo</div>
+    <h2 class="section-title">PROYECTOS<br><span>RECIENTES</span></h2>
+  </div>
+  <div class="portfolio-grid">
+    <div class="portfolio-card pc1 tall reveal-scale reveal-d1">
+      <div class="portfolio-card-bg"></div><div class="deco"></div>
+      <div class="pc-label">Branding</div>
+      <div class="portfolio-card-inner">
+        <div class="pc-tag">Identidad Visual</div>
+        <div class="pc-name">Marca: Gastro Concepto</div>
+        <div class="pc-desc">Construcción completa de identidad: logo, paleta cromática, tipografía y manual de marca para restaurante de alta cocina. Reconocimiento de marca +120% en 3 meses.</div>
+      </div>
+    </div>
+    <div class="portfolio-card pc2 reveal-scale reveal-d2">
+      <div class="portfolio-card-bg"></div><div class="deco"></div>
+      <div class="pc-label">Social Media</div>
+      <div class="portfolio-card-inner">
+        <div class="pc-tag">Contenido Digital</div>
+        <div class="pc-name">Campaña RRSS</div>
+        <div class="pc-desc">Estrategia y producción mensual para Instagram y TikTok. +40K seguidores orgánicos en 60 días.</div>
+      </div>
+    </div>
+    <div class="portfolio-card pc3 reveal-scale reveal-d3">
+      <div class="portfolio-card-bg"></div><div class="deco"></div>
+      <div class="pc-label">Publicidad</div>
+      <div class="portfolio-card-inner">
+        <div class="pc-tag">Meta Ads</div>
+        <div class="pc-name">E-commerce Scale</div>
+        <div class="pc-desc">Campaña de conversión con piezas A/B testeadas. ROAS 4.2x y segmentación por comportamiento real.</div>
+      </div>
+    </div>
+    <div class="portfolio-card pc4 reveal-scale reveal-d2">
+      <div class="portfolio-card-bg"></div><div class="deco"></div>
+      <div class="pc-label">Motion</div>
+      <div class="portfolio-card-inner">
+        <div class="pc-tag">Reels & Video</div>
+        <div class="pc-name">Pack Contenido 360°</div>
+        <div class="pc-desc">12 reels mensuales con motion graphics y edición profesional. Alcance promedio por reel: 80K visualizaciones.</div>
+      </div>
+    </div>
+    <div class="portfolio-card pc5 reveal-scale reveal-d4">
+      <div class="portfolio-card-bg"></div><div class="deco"></div>
+      <div class="pc-label">Web</div>
+      <div class="portfolio-card-inner">
+        <div class="pc-tag">Landing Page</div>
+        <div class="pc-name">Lanzamiento Producto</div>
+        <div class="pc-desc">Landing de alta conversión. Tasa del 8.3% — 3x por encima del promedio del sector en su categoría.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTADOS (punto 3) -->
+<section class="section" id="resultados" style="background:var(--bg2)">
+  <div class="reveal-blur">
+    <div class="section-label">Por qué elegirnos</div>
+    <h2 class="section-title">RESULTADOS<br><span>REALES</span></h2>
+  </div>
+  <div class="results-row">
+    <div class="result-card reveal-scale reveal-d1">
+      <div class="result-big"><sup>+</sup>300<sup>%</sup></div>
+      <div class="result-text">Aumento promedio de alcance orgánico en los primeros 60 días</div>
+    </div>
+    <div class="result-card reveal-scale reveal-d2">
+      <div class="result-big">3<sub>x</sub></div>
+      <div class="result-text">Retorno de inversión en campañas de publicidad paga para nuestros clientes</div>
+    </div>
+    <div class="result-card reveal-scale reveal-d3">
+      <div class="result-big">40<sup>+</sup></div>
+      <div class="result-text">Presencias digitales construidas con impacto real y medible</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contacto">
+  <div class="cta-eyebrow reveal-blur">¿Listo para el siguiente nivel?</div>
+  <h2 class="cta-headline reveal-blur reveal-d1">ESCRIBINOS<br><span>HOY.</span></h2>
+  <div class="cta-btns reveal reveal-d2">
+    <!-- punto 6: links correctos -->
+    <a href="https://wa.me/573246890767" class="btn-primary" target="_blank">💬 WhatsApp directo</a>
+    <a href="https://mail.google.com/mail/?view=cm&to=tuestudio.co@gmail.com" class="btn-ghost" target="_blank">✉️ Enviar correo</a>
+  </div>
+</section>
+
+<!-- FOOTER (punto 7: sin Behance ni LinkedIn) -->
+<footer>
+  <div class="footer-logo">Tu<span>Estudio</span>.co</div>
+  <div class="footer-links">
+    <a href="https://instagram.com" target="_blank">Instagram</a>
+    <a href="#" onclick="openPrivacy(event)">Política de privacidad</a>
+  </div>
+  <div class="footer-copy">© 2025 TuEstudio.co · Todos los derechos reservados</div>
+</footer>
+
+<script>
+// ===== CURSOR con smooth ring =====
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursor-ring');
+let mx=0, my=0, rx=0, ry=0;
+
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cursor.style.left=(mx-6)+'px'; cursor.style.top=(my-6)+'px'; });
+
+(function animRing(){
+  rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+  ring.style.left=(rx-18)+'px'; ring.style.top=(ry-18)+'px';
+  requestAnimationFrame(animRing);
+})();
+
+document.querySelectorAll('a,button,.service-item,.portfolio-card,.step,.result-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ cursor.style.transform='scale(2.5)'; ring.style.width='60px'; ring.style.height='60px'; ring.style.borderColor='rgba(255,107,0,.8)'; });
+  el.addEventListener('mouseleave',()=>{ cursor.style.transform='scale(1)'; ring.style.width='36px'; ring.style.height='36px'; ring.style.borderColor='rgba(255,107,0,.5)'; });
+});
+
+// ===== RIPPLE ON CLICK (punto 1) =====
+document.addEventListener('click', e => {
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  r.style.left = e.clientX+'px';
+  r.style.top  = e.clientY+'px';
+  document.body.appendChild(r);
+  setTimeout(()=>r.remove(), 560);
+});
+
+// ===== SCROLL REVEAL – all variants =====
+const revealClasses = ['.reveal', '.reveal-blur', '.reveal-left', '.reveal-right', '.reveal-scale'];
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+revealClasses.forEach(sel => document.querySelectorAll(sel).forEach(el => obs.observe(el)));
+
+// ===== PRIVACY MODAL (punto 5) =====
+function openPrivacy(e){ e&&e.preventDefault(); document.getElementById('privacyModal').classList.add('open'); document.body.style.overflow='hidden'; }
+function closePrivacy(){ document.getElementById('privacyModal').classList.remove('open'); document.body.style.overflow=''; }
+document.getElementById('privacyModal').addEventListener('click',function(e){ if(e.target===this) closePrivacy(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePrivacy(); });
+</script>
+</body>
+</html>
